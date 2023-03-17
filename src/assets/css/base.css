@@ -1,0 +1,32 @@
+.cursor-pointer{
+    cursor: pointer;
+}
+.text-decoration-line-through{
+    text-decoration: line-through;
+}
+
+.color-custom-warning{
+    color: #ff9f43;
+}
+.color-custom-primary{
+    color: #48dbfb;
+}
+.color-custom-success{
+    color: #1dd1a1;
+}
+.color-custom-danger{
+    color: #e74c3c;
+}
+
+.action-col{
+    display: block;
+    padding: 6px;
+    border: 1px solid #bdc3c7;
+    border-radius: 8px;
+    width: 40px;
+    height: 35px;
+}
+
+.action-col svg{
+    font-size: 16px;
+}
