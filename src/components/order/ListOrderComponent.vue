@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderOrderComponent />
+    <HeaderOrderComponent @searchListOrder="handleSearchListOrder" ref="headerOrderEl" />
 
     <el-table
       :empty-text="'Không có dữ liệu'"
@@ -46,23 +46,37 @@
       <el-table-column align="center" label="Thao tác" width="150" fixed="right">
         <template #default="scope">
           <div class="d-flex justify-content-center">
-            <router-link
-              :to="{
-                name: 'OrderDetail',
-                params: {
-                  slug: scope.row._id
-                }
-              }"
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Đang vận chuyển"
+              placement="top"
+              v-if="scope.row.status === EStatusOrder.PICKUP_PRODUCT"
             >
-              <el-tooltip class="box-item" effect="dark" content="Xem chi tiết" placement="top">
-                <span class="action-col">
-                  <font-awesome-icon
-                    :class="`color-custom-primary`"
-                    icon="fa-regular fa-pen-to-square"
-                  />
-                </span>
-              </el-tooltip>
-            </router-link>
+              <span
+                class="action-col cursor-pointer mr-1"
+                @click="handleChangeStatusOrder(scope.row._id, EStatusOrder.DELIVERY)"
+              >
+                <font-awesome-icon icon="fa-solid fa-truck" :class="`color-custom-primary`" />
+              </span>
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Đã nhận hàng"
+              placement="top"
+              v-if="scope.row.status === EStatusOrder.DELIVERY"
+            >
+              <span
+                class="action-col cursor-pointer mr-1"
+                @click="handleChangeStatusOrder(scope.row._id, EStatusOrder.RECEIVED)"
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-circle-check"
+                  :class="`color-custom-success`"
+                />
+              </span>
+            </el-tooltip>
 
             <el-tooltip
               class="box-item"
@@ -72,16 +86,39 @@
               v-if="scope.row.status === EStatusOrder.PICKUP_PRODUCT"
             >
               <span
-                class="action-col cursor-pointer ml-3"
+                class="action-col cursor-pointer ml-1"
                 @click="openDialogConfirmCancel(scope.row._id)"
               >
                 <font-awesome-icon :class="`color-custom-danger`" icon="fa-solid fa-ban" />
+              </span>
+            </el-tooltip>
+
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Xóa đơn hàng"
+              placement="top"
+              v-if="scope.row.status === EStatusOrder.CANCEL"
+            >
+              <span
+                class="action-col cursor-pointer ml-3"
+                @click="openDialogDeleteOrder(scope.row._id)"
+              >
+                <font-awesome-icon icon="fa-regular fa-trash-can" :class="`color-custom-danger`" />
               </span>
             </el-tooltip>
           </div>
         </template>
       </el-table-column>
     </el-table>
+    <div class="d-flex justify-content-end mt-4">
+      <el-pagination
+        layout="prev, pager, next"
+        :page-count="dataReactive.count"
+        :current-page="dataReactive.page"
+        @current-change="handleChangePage"
+      />
+    </div>
     <DialogProductsOrder
       :data="dataReactive.dataDialog"
       :isOpenDialog="dataReactive.isOpenDialog"
@@ -93,13 +130,19 @@
       @resetListOrder="resetListOrder"
       @closeDialog="closeCancelDialog"
     />
+
+    <DialogDefaultComponent
+      :data="dataDeleteDialog"
+      @closeDialog="closeDialogDelete"
+      @submitDialog="submitDialogDelete"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { getListOrder } from '@/api/order'
+import { ChangeStatusOrder, getListOrder, removeOrder } from '@/api/order'
 import moment from 'moment'
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { EStatusOrder, type DataOrderItem, type IDataOrderResponse } from './data'
 import HeaderOrderComponent from './header-order/HeaderOrderComponent.vue'
 import { LStatusOrder } from './data'
@@ -109,6 +152,9 @@ import DialogProductsOrder from './dialog-products/DialogProductsOrder.vue'
 import DialogConfirmCancelComponent from './dialog-confirm-cancel/DialogConfirmCancelComponent.vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import DialogDefaultComponent from '../dialog-constant/DialogDefaultComponent.vue'
+import { string } from 'yup'
+import { ElMessage } from 'element-plus'
 
 const dataReactive = reactive({
   tableData: [],
@@ -118,8 +164,37 @@ const dataReactive = reactive({
   dataDialog: [] as DataOrderItem[],
   isOpenDialog: false,
   orderIDCancel: '',
-  isOpenCancelDialog: false
+  isOpenCancelDialog: false,
+  querySearch: {}
 })
+
+const dataDeleteDialog = reactive({
+  width: '28%',
+  isOpenDialog: false,
+  title: 'Xác nhận xóa đơn hàng',
+  content: 'Bạn chắc chắn muốn xóa đơn hàng này?',
+  isLoading: false,
+  id: ''
+})
+
+const handleChangePage = async (page: number) => {
+  if (route.meta.typeOrder === 'cancel') {
+    await handleGetListOrder({
+      status: EStatusOrder.CANCEL,
+      ...dataReactive.querySearch,
+      ...{ page, limit: 10 }
+    })
+  } else {
+    await handleGetListOrder({
+      status: EStatusOrder.CANCEL,
+      not_equal: true,
+      ...{ page, limit: 10 },
+      ...dataReactive.querySearch
+    })
+  }
+}
+
+const headerOrderEl = ref<any>(null)
 
 const route = useRoute()
 
@@ -129,7 +204,19 @@ const handleGetListOrder = async (query: any) => {
   if (res) {
     const { data, page, count, countRecord } = res.data
     dataReactive.tableData = data
+    dataReactive.page = Number(page)
+    dataReactive.count = count
   }
+}
+
+const handleSearchListOrder = async (querySearch: any) => {
+  dataReactive.querySearch = querySearch
+  if (route.meta.typeOrder === 'cancel') {
+    await handleGetListOrder({ status: EStatusOrder.CANCEL, ...querySearch })
+  } else {
+    await handleGetListOrder({ status: EStatusOrder.CANCEL, not_equal: true, ...querySearch })
+  }
+  headerOrderEl.value.handleSetFalseIsLoading()
 }
 
 watch(
@@ -163,6 +250,36 @@ const closeCancelDialog = () => {
   dataReactive.isOpenCancelDialog = false
 }
 
+const openDialogDeleteOrder = (id: string) => {
+  dataDeleteDialog.isOpenDialog = true
+  dataDeleteDialog.id = id
+}
+
+const closeDialogDelete = () => {
+  dataDeleteDialog.isOpenDialog = false
+}
+
+const submitDialogDelete = async () => {
+  dataDeleteDialog.isLoading = true
+  const [res, error] = await removeOrder(dataDeleteDialog.id)
+  dataDeleteDialog.isLoading = false
+  if (res) {
+    ElMessage({
+      message: 'Xóa đơn hàng thành công',
+      type: 'success',
+      duration: 800
+    })
+    await handleGetListOrder({ status: EStatusOrder.CANCEL })
+  } else {
+    ElMessage({
+      message: 'Xóa đơn hàng không thành công',
+      type: 'error',
+      duration: 800
+    })
+  }
+  dataDeleteDialog.isOpenDialog = false
+}
+
 const resetListOrder = async () => {
   await handleGetListOrder({ status: EStatusOrder.CANCEL, not_equal: true })
 }
@@ -170,5 +287,20 @@ const resetListOrder = async () => {
 const openDialogConfirmCancel = (orderID: string) => {
   dataReactive.orderIDCancel = orderID
   dataReactive.isOpenCancelDialog = true
+}
+
+const handleChangeStatusOrder = async (orderID: string, status: EStatusOrder) => {
+  const [res, err] = await ChangeStatusOrder({
+    id: orderID,
+    status
+  })
+  if (res) {
+    ElMessage({
+      message: 'Cập nhật đơn hàng thành công',
+      type: 'success',
+      duration: 800
+    })
+    await handleGetListOrder({ status: EStatusOrder.CANCEL, not_equal: true })
+  }
 }
 </script>

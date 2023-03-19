@@ -52,7 +52,7 @@ export const LStatusOrder = [
   },
   {
     key: EStatusOrder.RECEIVED,
-    value: 'Đã giao thành công',
+    value: 'Đã nhận hàng',
     class: 'success'
   },
   {

@@ -1,5 +1,5 @@
 <template>
-  <el-form-item label="Tỉnh/Thành" prop="province_id" class="mb-0 d-flex align-items-center">
+  <el-form-item label="Tỉnh/Thành" prop="province_id" class="mb-0 d-flex align-items-center w-100">
     <el-autocomplete
       v-model="data.valueProvince"
       :fetch-suggestions="querySearch"

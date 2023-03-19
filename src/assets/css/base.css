@@ -1,3 +1,7 @@
+*{
+    font-size: 14.5px;
+}
+
 .cursor-pointer{
     cursor: pointer;
 }
@@ -29,4 +33,17 @@
 
 .action-col svg{
     font-size: 16px;
+}
+
+.custom-input-filter .el-input__wrapper,.custom-input-filter .el-textarea__inner{
+    box-shadow: none;
+    padding: 6px 12px;
+    border: 1px solid #f1f2f6;
+    border-radius: 8px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

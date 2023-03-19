@@ -20,11 +20,11 @@
 <style lang="scss" scoped></style>
 
 <script setup lang="ts">
-import { cancelOrderApi } from '@/api/order'
+import { ChangeStatusOrder } from '@/api/order'
 import { formatNumberMoney } from '@/constant/constant'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref, watch, type PropType } from 'vue'
-import type { DataOrderItem, IDataOrderResponse } from '../data'
+import { EStatusOrder, type DataOrderItem, type IDataOrderResponse } from '../data'
 const props = defineProps({
   id: String,
   isOpenDialog: Boolean
@@ -47,11 +47,14 @@ watch(
 
 const CancelOrder = async () => {
   isLoading.value = true
-  const [res, err] = await cancelOrderApi(props.id as string)
+  const [res, err] = await ChangeStatusOrder({
+    id: props.id as string,
+    status: EStatusOrder.CANCEL
+  })
   if (res) {
     emit('resetListOrder')
     ElMessage({
-      message: res.data.message,
+      message: 'Hủy đơn hàng thành công',
       type: 'success',
       duration: 800
     })
@@ -59,7 +62,7 @@ const CancelOrder = async () => {
     emit('closeDialog')
   } else {
     ElMessage({
-      message: res.data.message,
+      message: 'Hủy đơn hàng không thành công',
       type: 'error',
       duration: 800
     })

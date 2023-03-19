@@ -51,3 +51,20 @@ export const getDetailProduct = async (query?: TGetListProducts) => {
     params: query
   })
 }
+
+export const getListProducts = async (query?: TGetListProducts) => {
+  try {
+    const res: any = await instance.get<{
+      data: TProduct[]
+      page: number
+      count: number
+      maxPrices: number
+    }>('/post/list', {
+      params: query
+    })
+
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
+}

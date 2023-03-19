@@ -133,7 +133,7 @@ const loginFormSchema = yup.object().shape({
   password: yup.string().required('Password bắt buộc nhập')
 })
 
-const validate = (field: EFieldDataForm) => {
+const validate = (field: 'email' | 'password') => {
   loginFormSchema
     .validateAt(field, formData)
     .then(() => {

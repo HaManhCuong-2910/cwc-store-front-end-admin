@@ -25,5 +25,11 @@ export const menuCWC = [
         name: 'Đơn hàng đã hủy'
       }
     ]
+  },
+  {
+    path: '/manage-product',
+    name: 'Quản lý sản phẩm',
+    icon: ShoppingOutlined,
+    child: null
   }
 ]

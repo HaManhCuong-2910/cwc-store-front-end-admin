@@ -1,5 +1,5 @@
 <template>
-  <el-form-item label="Quận/Huyện" prop="district_id" class="mb-0 d-flex align-items-center">
+  <el-form-item label="Quận/Huyện" prop="district_id" class="mb-0 d-flex align-items-center w-100">
     <el-autocomplete
       v-model="data.valueDistrict"
       :fetch-suggestions="querySearch"

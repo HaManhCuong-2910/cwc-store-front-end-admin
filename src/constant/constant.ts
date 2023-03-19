@@ -37,3 +37,7 @@ export const formatNumberMoney = (value: number | string) => {
   const formater = new Intl.NumberFormat('vi-VN')
   return formater.format(valueNumber as number).split(',')[0]
 }
+
+export const removeEmptyValueInObject = (obj: any) => {
+  return Object.entries(obj).reduce((acc, [k, v]) => (v ? { ...acc, [k]: v } : acc), {})
+}
