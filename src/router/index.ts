@@ -3,6 +3,7 @@ import DefaultLayoutVue from '@/layout/DefaultLayout.vue'
 import { orderRoute } from './order'
 import { authRoute } from './auth'
 import { productRoute } from './product'
+import { newsRoute } from './news'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,6 +11,7 @@ const router = createRouter({
     ...orderRoute,
     ...authRoute,
     ...productRoute,
+    ...newsRoute,
     {
       path: '/',
       name: 'home',

@@ -1,4 +1,4 @@
-import type { TProduct } from '@/api/product'
+import type { TProduct } from '@/api/product/data'
 
 export interface IDataOrderResponse {
   data: OrderItem[]

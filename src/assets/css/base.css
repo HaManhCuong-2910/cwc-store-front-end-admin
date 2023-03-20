@@ -22,6 +22,10 @@
     color: #e74c3c;
 }
 
+#page-top{
+    overflow-x: hidden;
+}
+
 .action-col{
     display: block;
     padding: 6px;

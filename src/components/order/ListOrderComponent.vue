@@ -174,6 +174,7 @@ const dataDeleteDialog = reactive({
   title: 'Xác nhận xóa đơn hàng',
   content: 'Bạn chắc chắn muốn xóa đơn hàng này?',
   isLoading: false,
+  btnConfirm: 'Xác nhận hủy',
   id: ''
 })
 

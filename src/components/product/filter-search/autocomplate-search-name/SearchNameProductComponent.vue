@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { getListProducts, type TProduct } from '@/api/product'
+import { getListProducts } from '@/api/product'
+import type { TProduct } from '@/api/product/data'
 import { onMounted, ref } from 'vue'
 
 interface ProductsItem {

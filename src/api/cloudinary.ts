@@ -21,3 +21,21 @@ export const uploadFileToCloud = async (file: File) => {
     return [null, error]
   }
 }
+
+export const uploadMultipleFileToCloud = async (files: File[]) => {
+  const formData = new FormData()
+  files.map((itemFile: File) => {
+    formData.append('file', itemFile)
+  })
+
+  formData.append(
+    'upload_preset',
+    import.meta.env.VITE_APP_TOKEN_CLOUDINARY_UPLOAD_PRESET as string
+  )
+  try {
+    const res = (await cloudinaryInstance.post('/', formData)).data
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
+}

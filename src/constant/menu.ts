@@ -2,7 +2,8 @@ import {
   MailOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
-  ShoppingOutlined
+  ShoppingOutlined,
+  UsergroupAddOutlined
 } from '@ant-design/icons-vue'
 export const menuCWC = [
   {
@@ -30,6 +31,12 @@ export const menuCWC = [
     path: '/manage-product',
     name: 'Quản lý sản phẩm',
     icon: ShoppingOutlined,
+    child: null
+  },
+  {
+    path: '/manage-news',
+    name: 'Quản lý tin tức',
+    icon: UsergroupAddOutlined,
     child: null
   }
 ]

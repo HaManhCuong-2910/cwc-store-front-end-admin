@@ -1,55 +1,15 @@
+import type { TDefaultResponseObject } from '@/constant/constant'
 import { instance } from '../axios'
-export interface TGetListProducts {
-  page?: number
-  limit?: number
-  name?: string
-  description?: string
-  price?: number
-  sales?: number
-  sales_percent?: number
-  images?: string[]
-  is_hot?: boolean
-  quantities?: Quantity[]
-  category?: string
-  slug?: string
-}
-
-export type Quantity = {
-  size: number
-  quantity: number
-  _id: string
-}
-
-export type TProduct = {
-  _id: string
-  name: string
-  description: string
-  is_hot: boolean
-  category: Category
-  price: number
-  sales: number
-  sales_percent: number
-  slug: string
-  images: string[]
-  quantities: Quantity[]
-  createdAt: string
-  updatedAt: string
-  __v: number
-}
-
-export type Category = {
-  _id: string
-  name: string
-  slug: string
-  parent: string
-  createdAt: string
-  updatedAt: string
-  __v: number
-}
+import type { ICreateProductDto, TGetListProducts, TProduct } from './data'
 export const getDetailProduct = async (query?: TGetListProducts) => {
-  return await instance.get<TProduct>('/post', {
-    params: query
-  })
+  try {
+    const res: any = await instance.get<TProduct>('/post', {
+      params: query
+    })
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
 }
 
 export const getListProducts = async (query?: TGetListProducts) => {
@@ -62,6 +22,44 @@ export const getListProducts = async (query?: TGetListProducts) => {
     }>('/post/list', {
       params: query
     })
+
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
+}
+
+export const createProductApi = async (data: ICreateProductDto) => {
+  try {
+    const res: any = await instance.post<{
+      status: number
+      message: string
+      data: TProduct
+    }>('/post/create', data)
+
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
+}
+
+export const updateProductApi = async (data: ICreateProductDto, id: string) => {
+  try {
+    const res: any = await instance.put<{
+      status: number
+      message: string
+      data: TProduct
+    }>(`/post/${id}`, data)
+
+    return [res, null]
+  } catch (error) {
+    return [null, error]
+  }
+}
+
+export const deleteProductApi = async (id: string) => {
+  try {
+    const res: any = await instance.delete<TDefaultResponseObject>(`/post/${id}`)
 
     return [res, null]
   } catch (error) {
