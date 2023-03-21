@@ -13,6 +13,7 @@ import 'element-plus/dist/index.css'
 import { setupInterceptors } from '@/api/setupInterceptors'
 import store from '@/store'
 import VueCookies from 'vue3-cookies'
+import { QuillEditor } from '@vueup/vue-quill'
 
 library.add(fas, fab, far)
 export function registerGlobalComponent(app: any) {
@@ -23,6 +24,7 @@ export function registerGlobalComponent(app: any) {
     .use(Antd)
     .use(ElementPlus)
     .use(VueCookies, { expires: '30d' })
+    .component('QuillEditor', QuillEditor)
     .component('font-awesome-icon', FontAwesomeIcon)
 
   app.mount('#app')

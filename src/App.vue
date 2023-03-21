@@ -3,8 +3,12 @@
     <RouterView></RouterView>
   </component>
   <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+  <a
+    class="scroll-to-top rounded d-flex justify-content-center align-items-center"
+    style="z-index: 1000"
+    href="#page-top"
+  >
+    <font-awesome-icon :icon="['fas', 'arrow-up']" />
   </a>
 </template>
 

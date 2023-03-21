@@ -152,7 +152,12 @@
                 type="number"
                 placeholder="Nhập số lượng sản phẩm"
               />
-              <el-button class="ml-4" type="warning" plain @click="removeQuantity(item)"
+              <el-button
+                v-if="props.typeScreen !== ETypeScreen.DETAIL"
+                class="ml-4"
+                type="warning"
+                plain
+                @click="removeQuantity(item)"
                 >Xóa</el-button
               >
             </div>
@@ -333,7 +338,7 @@ const convertFileToUrlCloud = async (images: any[]) => {
     .map((containUrl: any) => containUrl.url)
   const imageHaveNotUrl = images.filter((item: any) => item.raw)
   const listFileToUpload = imageHaveNotUrl.map((item: any) => item.raw)
-  const resultFileUpload = []
+  const resultFileUpload: any = []
   if (listFileToUpload.length > 0) {
     for (let i = 0; i < listFileToUpload.length; i++) {
       const [res, error] = await uploadFileToCloud(listFileToUpload[i])

@@ -11,9 +11,13 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="closeDialog">Đóng</el-button>
-        <el-button type="danger" @click="submitDialog" :loading="props.data.isLoading">{{
-          props.data.btnConfirm
-        }}</el-button>
+        <el-button
+          v-if="!props.data.hideBtnSubmit"
+          type="danger"
+          @click="submitDialog"
+          :loading="props.data.isLoading"
+          >{{ props.data.btnConfirm }}</el-button
+        >
       </span>
     </template>
   </el-dialog>
@@ -34,6 +38,7 @@ type TDialogDefault = {
   content: string
   isLoading: boolean
   btnConfirm: string
+  hideBtnSubmit?: boolean
   id: string
 }
 

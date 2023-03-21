@@ -1,7 +1,9 @@
 <template>
-  <div>dsada</div>
+  <div>
+    <ManageNewsComponent />
+  </div>
 </template>
 
 <script setup lang="ts">
-import ManageProductComponent from '@/components/product/ManageProductComponent.vue'
+import ManageNewsComponent from '@/components/news/ManageNewsComponent.vue'
 </script>
