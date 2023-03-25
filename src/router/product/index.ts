@@ -5,7 +5,8 @@ export const productRoute = [
     name: 'ManageProduct',
     meta: {
       layout: DefaultLayoutVue,
-      requiresAuth: true
+      requiresAuth: true,
+      transition: 'slide-fade'
     },
     component: () => import('@/pages/product/ManageProductPage.vue')
   },

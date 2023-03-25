@@ -5,6 +5,7 @@ export const newsRoute = [
     name: 'ManageNews',
     meta: {
       layout: DefaultLayoutVue,
+      transition: 'slide-fade',
       requiresAuth: true
     },
     component: () => import('@/pages/news/ManageNewsPage.vue')

@@ -13,7 +13,7 @@ export interface TGetNewsResponse {
 export interface ICreateNewsDto {
   _id?: string
   author: string
-  img: string
+  img: string | File
   title: string
   short_description: string
   description: string

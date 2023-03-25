@@ -153,7 +153,9 @@
                 placeholder="Nhập số lượng sản phẩm"
               />
               <el-button
-                v-if="props.typeScreen !== ETypeScreen.DETAIL"
+                v-if="
+                  props.typeScreen !== ETypeScreen.DETAIL && formCreateProduct.quantities.length > 1
+                "
                 class="ml-4"
                 type="warning"
                 plain

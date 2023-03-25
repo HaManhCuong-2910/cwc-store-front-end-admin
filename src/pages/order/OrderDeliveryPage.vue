@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <ListOrderComponent />
-  </div>
+  <ListOrderComponent />
 </template>
 
 <script setup lang="ts">

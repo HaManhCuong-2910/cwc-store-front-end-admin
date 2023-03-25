@@ -1,5 +1,5 @@
 <template>
-  <div class="text-right mr-5 mb-4">
+  <div class="text-right mb-4">
     <el-button size="large" type="danger" :icon="CirclePlus" @click="redirectCreateNews"
       >Tạo mới</el-button
     >

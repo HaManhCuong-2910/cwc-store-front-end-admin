@@ -1,12 +1,18 @@
 <template>
-  <el-form-item label="Quận/Huyện" prop="district_id" class="mb-0 d-flex align-items-center w-100">
+  <el-form-item
+    label="Quận/Huyện"
+    prop="district_id"
+    :class="props.classCustom || 'd-flex align-items-center mb-0'"
+    class="w-100"
+  >
     <el-autocomplete
       v-model="data.valueDistrict"
       :fetch-suggestions="querySearch"
-      class="w-100"
+      class="w-100 custom-input-filter"
       clearable
       placeholder="Nhập quận / huyện"
       @select="handleSelectDistrict"
+      @change="handleChangeDistrict"
     />
   </el-form-item>
 </template>
@@ -25,10 +31,11 @@ import type { TDataLocation } from '@/constant/constant'
 interface PropsType {
   province_id: string | number
   district_id: string | number
+  classCustom?: string
 }
 
 export default defineComponent({
-  props: ['province_id', 'district_id'],
+  props: ['province_id', 'district_id', 'classCustom'],
   emits: ['setDistrict'],
   setup(props: PropsType, { emit }) {
     const data = reactive({
@@ -40,6 +47,11 @@ export default defineComponent({
     const handleSelectDistrict = (item: TDataLocation) => {
       data.valueDistrict = item.value
       emit('setDistrict', item.link)
+    }
+
+    const handleChangeDistrict = (item) => {
+      data.valueDistrict = ''
+      emit('setDistrict', '')
     }
 
     const handleGetDistrict = async (province_id: string | number) => {
@@ -74,6 +86,7 @@ export default defineComponent({
       () => props.province_id,
       async (value) => {
         data.valueDistrict = ''
+        emit('setDistrict', '')
         ListDistrict.value = []
         ListDistrict.value = await handleGetDistrict(value)
         data.isDisable = false
@@ -83,6 +96,7 @@ export default defineComponent({
     onMounted(async () => {
       if (props.province_id) {
         data.valueDistrict = ''
+        emit('setDistrict', '')
         ListDistrict.value = []
         ListDistrict.value = await handleGetDistrict(props.province_id)
         data.isDisable = false
@@ -97,7 +111,8 @@ export default defineComponent({
       props,
       data,
       handleSelectDistrict,
-      querySearch
+      querySearch,
+      handleChangeDistrict
     }
   }
 })

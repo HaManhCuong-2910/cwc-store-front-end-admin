@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { formatNumberMoney } from '@/constant/constant'
-import { onMounted, watch, type PropType } from 'vue'
+import type { PropType } from 'vue'
 import type { DataOrderItem, IDataOrderResponse } from '../data'
 const props = defineProps({
   data: Array as PropType<DataOrderItem[]>,
@@ -60,12 +60,4 @@ const emit = defineEmits(['closeDialog'])
 const closeDialog = () => {
   emit('closeDialog')
 }
-
-watch(
-  () => props.data,
-  () => {
-    console.log('props', props.data)
-  },
-  { deep: true }
-)
 </script>

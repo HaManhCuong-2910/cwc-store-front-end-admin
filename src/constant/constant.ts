@@ -29,6 +29,21 @@ export type TDefaultResponseObject = {
   message: string
 }
 
+export const indexMethod = (index: number, currentPage: number, limit?: number) => {
+  return (currentPage - 1) * (limit || 10) + index + 1
+}
+
+export const validatePhoneNumber = (rule: any, value: any, callback: any) => {
+  const regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g
+  if (value === '') {
+    callback(new Error('Vui lòng nhập số điện thoại'))
+  }
+  if (!regex.test(value)) {
+    callback(new Error('Số điện thoại không đúng định dạng'))
+  }
+  callback()
+}
+
 export const formatNumberMoney = (value: number | string) => {
   let valueNumber = value
   if (typeof value !== 'string') {

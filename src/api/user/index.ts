@@ -26,7 +26,7 @@ const storeToken = (
 
 const LoginAgain = (router: Router) => {
   router.push({
-    name: 'Login'
+    name: 'LoginPage'
   })
 }
 

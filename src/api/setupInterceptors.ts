@@ -4,6 +4,7 @@ import { instance } from './axios'
 import type { AxiosError } from 'axios'
 import type { Store } from 'vuex'
 import type { Router } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 export const setupInterceptors = (store: Store<any>, router: Router) => {
   instance.interceptors.request.use(
@@ -33,6 +34,13 @@ export const setupInterceptors = (store: Store<any>, router: Router) => {
     async (error: any) => {
       if (error.response?.data?.statusCode === 401) {
         serviceUser.LoginAgain(router)
+      }
+      if (error.response?.data?.statusCode === 403) {
+        ElMessage({
+          message: 'Không có quyền truy cập',
+          type: 'error',
+          duration: 1000
+        })
       }
       if (error.response?.data?.statusCode === 406) {
         const [data, errorApi] = await refreshToken()

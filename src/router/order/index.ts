@@ -5,7 +5,8 @@ export const orderRoute = [
     name: 'OrderDelivery',
     meta: {
       layout: DefaultLayoutVue,
-      requiresAuth: true
+      requiresAuth: true,
+      transition: 'slide-fade'
     },
     component: () => import('@/pages/order/OrderDeliveryPage.vue')
   },
@@ -24,6 +25,7 @@ export const orderRoute = [
     meta: {
       layout: DefaultLayoutVue,
       typeOrder: 'cancel',
+      transition: 'slide-fade',
       requiresAuth: true
     },
     component: () => import('@/pages/order/OrderDeliveryPage.vue')

@@ -1,12 +1,18 @@
 <template>
-  <el-form-item label="Tỉnh/Thành" prop="province_id" class="mb-0 d-flex align-items-center w-100">
+  <el-form-item
+    label="Tỉnh/Thành"
+    prop="province_id"
+    class="w-100"
+    :class="props.classCustom || 'd-flex align-items-center mb-0'"
+  >
     <el-autocomplete
       v-model="data.valueProvince"
       :fetch-suggestions="querySearch"
       clearable
-      class="w-100"
+      class="w-100 custom-input-filter"
       placeholder="Nhập tỉnh / thành"
       @select="handleSelectProvince"
+      @change="handleChangeProvince"
     />
   </el-form-item>
 </template>
@@ -24,10 +30,11 @@ import type { TDataLocation } from '@/constant/constant'
 
 interface PropsType {
   province_id: string | number
+  classCustom?: string
 }
 
 export default defineComponent({
-  props: ['province_id'],
+  props: ['province_id', 'classCustom'],
   emits: ['setProvince'],
   setup(props: PropsType, { emit }) {
     const data = reactive({
@@ -38,6 +45,11 @@ export default defineComponent({
     const handleSelectProvince = (item: TDataLocation) => {
       data.valueProvince = item.value
       emit('setProvince', item.link)
+    }
+
+    const handleChangeProvince = (item) => {
+      data.valueProvince = ''
+      emit('setProvince', '')
     }
 
     const handleGetProvince = async () => {
@@ -74,7 +86,8 @@ export default defineComponent({
       props,
       data,
       handleSelectProvince,
-      querySearch
+      querySearch,
+      handleChangeProvince
     }
   }
 })

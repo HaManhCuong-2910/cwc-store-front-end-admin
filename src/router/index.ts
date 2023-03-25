@@ -4,6 +4,8 @@ import { orderRoute } from './order'
 import { authRoute } from './auth'
 import { productRoute } from './product'
 import { newsRoute } from './news'
+import { categoryRoute } from './category'
+import { accountRoute } from './account'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +14,8 @@ const router = createRouter({
     ...authRoute,
     ...productRoute,
     ...newsRoute,
+    ...accountRoute,
+    ...categoryRoute,
     {
       path: '/',
       name: 'home',

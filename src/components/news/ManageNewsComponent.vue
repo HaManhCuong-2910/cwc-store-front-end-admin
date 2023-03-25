@@ -2,8 +2,20 @@
   <div>
     <FilterSearchNewsComponent @searchListNews="searchListNews" ref="filterSearch" />
 
-    <el-table :data="dataReactive.tableData" style="width: 100%">
-      <el-table-column align="center" fixed="left" prop="title" label="Tiêu đề" width="200" />
+    <el-table
+      v-loading="dataReactive.isLoadingTable"
+      :data="dataReactive.tableData"
+      style="width: 100%"
+    >
+      <el-table-column
+        align="center"
+        type="index"
+        :index="(indexOrder: number)=>indexMethod(indexOrder,dataReactive.page as number)"
+        width="50"
+        fixed="left"
+        label="STT"
+      />
+      <el-table-column align="center" width="250" fixed="left" prop="title" label="Tiêu đề" />
       <el-table-column align="center" label="Ảnh" width="260">
         <template #default="scope">
           <img :src="scope.row.img" class="img-table" alt="" srcset="" />
@@ -32,7 +44,7 @@
       </el-table-column>
       <el-table-column align="center" label="Thao tác" fixed="right" width="150">
         <template #default="scope">
-          <div class="d-flex">
+          <div class="d-flex justify-content-center">
             <router-link
               :to="{
                 name: 'DetailNews',
@@ -115,7 +127,7 @@
 
 <script setup lang="ts">
 import FilterSearchNewsComponent from './filter-search/FilterSearchNewsComponent.vue'
-import { formatNumberMoney } from '@/constant/constant'
+import { formatNumberMoney, indexMethod } from '@/constant/constant'
 import moment from 'moment'
 import { onMounted, reactive, ref } from 'vue'
 import DialogDefaultComponent from '../dialog-constant/DialogDefaultComponent.vue'
@@ -129,11 +141,13 @@ type TDataReactive = {
   tableData: TGetNewsResponse[]
   page: number | string
   count: number | string
+  isLoadingTable: boolean
   querySearch: any
 }
 
 const dataReactive = reactive<TDataReactive>({
   tableData: [],
+  isLoadingTable: false,
   page: '',
   count: '',
   querySearch: {}
@@ -178,6 +192,7 @@ const submitDialogDelete = async () => {
   dataDeleteDialog.isLoading = true
   const [res, error] = await deleteNewsApi(dataDeleteDialog.id)
   dataDeleteDialog.isLoading = false
+  dataDeleteDialog.isOpenDialog = false
   if (res) {
     ElMessage({
       message: 'Xóa tin tức thành công',
@@ -192,7 +207,6 @@ const submitDialogDelete = async () => {
       duration: 800
     })
   }
-  dataDeleteDialog.isOpenDialog = false
 }
 
 const openDialogDelete = (id: string) => {
@@ -203,12 +217,14 @@ const openDialogDelete = (id: string) => {
 const filterSearch = ref<any>(null)
 
 const handleGetListNews = async (query?: any) => {
+  dataReactive.isLoadingTable = true
   const [res, error] = await getListNewsApi(query)
   if (res) {
     const { data, page, count } = res.data
     dataReactive.tableData = data
     dataReactive.page = Number(page)
     dataReactive.count = count
+    dataReactive.isLoadingTable = false
   }
 }
 
@@ -219,6 +235,7 @@ const searchListNews = async (querySearch: any) => {
 }
 
 const handleChangePage = async (page: number) => {
+  dataReactive.page = page
   await handleGetListNews({ ...dataReactive.querySearch, ...{ page, limit: 10 } })
 }
 

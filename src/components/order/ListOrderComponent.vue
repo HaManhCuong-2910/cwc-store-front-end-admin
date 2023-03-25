@@ -3,11 +3,20 @@
     <HeaderOrderComponent @searchListOrder="handleSearchListOrder" ref="headerOrderEl" />
 
     <el-table
+      v-loading="dataReactive.isLoadingTable"
       :empty-text="'Không có dữ liệu'"
       :data="dataReactive.tableData"
       stripe
       class="w-100 mt-5"
     >
+      <el-table-column
+        align="center"
+        type="index"
+        :index="(indexOrder: number)=>indexMethod(indexOrder,dataReactive.page as number)"
+        width="50"
+        fixed="left"
+        label="STT"
+      />
       <el-table-column fixed="left" align="center" prop="name" label="Họ và tên" width="150" />
       <el-table-column align="center" prop="phoneNumber" label="Số điện thoại" width="150" />
       <el-table-column align="center" label="Sản phẩm đặt" width="150">
@@ -17,7 +26,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Giá" width="150">
+      <el-table-column align="center" label="Giá">
         <template #default="scope">
           <span>{{ formatNumberMoney(scope.row.price) }} VNĐ</span>
         </template>
@@ -147,7 +156,7 @@ import { EStatusOrder, type DataOrderItem, type IDataOrderResponse } from './dat
 import HeaderOrderComponent from './header-order/HeaderOrderComponent.vue'
 import { LStatusOrder } from './data'
 import type { TDefaultObject } from '@/constant/constant'
-import { formatNumberMoney } from '@/constant/constant'
+import { formatNumberMoney, indexMethod } from '@/constant/constant'
 import DialogProductsOrder from './dialog-products/DialogProductsOrder.vue'
 import DialogConfirmCancelComponent from './dialog-confirm-cancel/DialogConfirmCancelComponent.vue'
 import router from '@/router'
@@ -158,6 +167,7 @@ import { ElMessage } from 'element-plus'
 
 const dataReactive = reactive({
   tableData: [],
+  isLoadingTable: false,
   page: 1,
   count: 0,
   countRecord: 0,
@@ -179,6 +189,7 @@ const dataDeleteDialog = reactive({
 })
 
 const handleChangePage = async (page: number) => {
+  dataReactive.page = Number(page)
   if (route.meta.typeOrder === 'cancel') {
     await handleGetListOrder({
       status: EStatusOrder.CANCEL,
@@ -200,6 +211,7 @@ const headerOrderEl = ref<any>(null)
 const route = useRoute()
 
 const handleGetListOrder = async (query: any) => {
+  dataReactive.isLoadingTable = true
   const [res, error] = await getListOrder(query)
 
   if (res) {
@@ -207,6 +219,7 @@ const handleGetListOrder = async (query: any) => {
     dataReactive.tableData = data
     dataReactive.page = Number(page)
     dataReactive.count = count
+    dataReactive.isLoadingTable = false
   }
 }
 

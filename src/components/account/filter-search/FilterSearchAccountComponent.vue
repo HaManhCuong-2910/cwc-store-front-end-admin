@@ -1,4 +1,9 @@
 <template>
+  <div class="text-right mb-4">
+    <el-button size="large" type="danger" :icon="CirclePlus" @click="redirectCreateAccount"
+      >Tạo mới</el-button
+    >
+  </div>
   <div class="row">
     <div class="col-md-3 d-flex align-items-center">
       <a-input-group compact class="w-100 d-flex custom-input-group">
@@ -29,7 +34,7 @@
         :clearable="true"
       >
         <el-option
-          v-for="item in LStatusOrder"
+          v-for="item in listStatusOption"
           :key="item.key"
           :label="item.value"
           :value="item.key"
@@ -44,14 +49,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
-import { Search } from '@element-plus/icons-vue'
 import ProvinceInput from '@/components/location/ProvinceInput.vue'
 import DistrictInput from '@/components/location/DistrictInput.vue'
+import { Search, CirclePlus } from '@element-plus/icons-vue'
+import { listStatusOption, type EStatusAccount } from '@/api/account/data'
 import { removeEmptyValueInObject } from '@/constant/constant'
-import type { EStatusOrder } from '../data'
-import { LStatusOrder } from '../data'
+import router from '@/router'
+const statusValue = ref<EStatusAccount | ''>('')
 
 const menuSearch = [
   {
@@ -59,26 +65,27 @@ const menuSearch = [
     value: 'Họ và tên'
   },
   {
+    key: 'email',
+    value: 'Email'
+  },
+  {
     key: 'phoneNumber',
     value: 'Số điện thoại'
   }
 ]
 
-const menuSearchActive = ref<string>(menuSearch[0].key)
 const valueSearch = ref<string>('')
+const menuSearchActive = ref<string>(menuSearch[0].key)
 const province_id = ref<number | string>('')
 const district_id = ref<number | string>('')
 const isLoading = ref<boolean>(false)
-const statusValue = ref<EStatusOrder | ''>('')
-
+const emit = defineEmits(['searchListAccount'])
 const setProvince = (id: number) => {
   province_id.value = id
 }
 const setDistrict = (id: number) => {
   district_id.value = id
 }
-
-const emit = defineEmits(['searchListOrder'])
 
 const SearchList = () => {
   isLoading.value = true
@@ -94,11 +101,17 @@ const SearchList = () => {
     district: district_id.value,
     status: statusValue.value
   }
-  emit('searchListOrder', removeEmptyValueInObject(querySearch))
+  emit('searchListAccount', removeEmptyValueInObject(querySearch))
 }
 
 const handleSetFalseIsLoading = () => {
   isLoading.value = false
 }
 defineExpose({ handleSetFalseIsLoading })
+
+const redirectCreateAccount = () => {
+  router.push({
+    name: 'CreateAccount'
+  })
+}
 </script>
