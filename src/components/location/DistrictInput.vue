@@ -6,6 +6,7 @@
     class="w-100"
   >
     <el-autocomplete
+      :disabled="props.isDisable"
       v-model="data.valueDistrict"
       :fetch-suggestions="querySearch"
       class="w-100 custom-input-filter"
@@ -32,10 +33,11 @@ interface PropsType {
   province_id: string | number
   district_id: string | number
   classCustom?: string
+  isDisable?: boolean
 }
 
 export default defineComponent({
-  props: ['province_id', 'district_id', 'classCustom'],
+  props: ['province_id', 'district_id', 'classCustom', 'isDisable'],
   emits: ['setDistrict'],
   setup(props: PropsType, { emit }) {
     const data = reactive({
@@ -85,8 +87,11 @@ export default defineComponent({
     watch(
       () => props.province_id,
       async (value) => {
-        data.valueDistrict = ''
-        emit('setDistrict', '')
+        if (!props.province_id) {
+          data.valueDistrict = ''
+          emit('setDistrict', '')
+        }
+
         ListDistrict.value = []
         ListDistrict.value = await handleGetDistrict(value)
         data.isDisable = false
@@ -95,8 +100,10 @@ export default defineComponent({
 
     onMounted(async () => {
       if (props.province_id) {
-        data.valueDistrict = ''
-        emit('setDistrict', '')
+        if (!props.province_id) {
+          data.valueDistrict = ''
+          emit('setDistrict', '')
+        }
         ListDistrict.value = []
         ListDistrict.value = await handleGetDistrict(props.province_id)
         data.isDisable = false

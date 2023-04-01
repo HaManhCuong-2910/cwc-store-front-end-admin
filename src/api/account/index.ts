@@ -1,6 +1,7 @@
 import type { TDefaultResponseObject } from '@/constant/constant'
 import { instance } from '../axios'
 import type {
+  IDataAccount,
   IDataAccountResponse,
   TCreateAccountForm,
   TGetListRolesResponse,
@@ -40,6 +41,24 @@ export const updateAccountApi = async (data: TUpdateAccount) => {
 export const createAccountApi = async (data: TCreateAccountForm) => {
   try {
     const res = await instance.post<{}>('/account/create', data)
+    return [res, null]
+  } catch (err: any) {
+    return [null, err]
+  }
+}
+
+export const getDetailAccountApi = async (id: string) => {
+  try {
+    const res = await instance.get<IDataAccount>(`/account/${id}/user`)
+    return [res, null]
+  } catch (err: any) {
+    return [null, err]
+  }
+}
+
+export const deleteAccountApi = async (id: string) => {
+  try {
+    const res = await instance.delete<TDefaultResponseObject>(`/account/${id}/delete`)
     return [res, null]
   } catch (err: any) {
     return [null, err]

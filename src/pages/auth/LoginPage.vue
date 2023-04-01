@@ -149,28 +149,27 @@ const { cookies } = useCookies()
 
 const onSubmitForm = (e: any) => {
   e.preventDefault()
-  loginFormSchema
-    .validate(formData, { abortEarly: false })
-    .then(async () => {
-      isLoading.value = true
-      const [res, err] = await Login(formData)
-      if (res) {
-        const { access_token, user } = res.data
-        cookies.set('access_token', access_token, timeExpireAccessToken)
-        store.commit('setUserData', user)
-        ElMessage({
-          message: 'Đăng nhập thành công',
-          type: 'success',
-          duration: 1000
-        })
-        router.push({ path: '/' })
-      } else {
-        console.log('err', err)
-      }
-      isLoading.value = false
-    })
-    .catch((err) => {
-      console.log('err', err)
-    })
+  loginFormSchema.validate(formData, { abortEarly: false }).then(async () => {
+    isLoading.value = true
+    const [res, err] = await Login(formData)
+    if (res) {
+      const { access_token, user } = res.data
+      cookies.set('access_token', access_token, timeExpireAccessToken)
+      store.commit('setUserData', user)
+      ElMessage({
+        message: 'Đăng nhập thành công',
+        type: 'success',
+        duration: 1000
+      })
+      router.push({ path: '/' })
+    } else {
+      ElMessage({
+        message: 'Đăng nhập thất bại',
+        type: 'error',
+        duration: 1000
+      })
+    }
+    isLoading.value = false
+  })
 }
 </script>

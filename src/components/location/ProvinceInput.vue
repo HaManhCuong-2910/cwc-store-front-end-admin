@@ -6,6 +6,7 @@
     :class="props.classCustom || 'd-flex align-items-center mb-0'"
   >
     <el-autocomplete
+      :disabled="props.isDisable"
       v-model="data.valueProvince"
       :fetch-suggestions="querySearch"
       clearable
@@ -30,11 +31,12 @@ import type { TDataLocation } from '@/constant/constant'
 
 interface PropsType {
   province_id: string | number
+  isDisable?: boolean
   classCustom?: string
 }
 
 export default defineComponent({
-  props: ['province_id', 'classCustom'],
+  props: ['province_id', 'classCustom', 'isDisable'],
   emits: ['setProvince'],
   setup(props: PropsType, { emit }) {
     const data = reactive({

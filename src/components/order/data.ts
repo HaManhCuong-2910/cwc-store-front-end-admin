@@ -61,3 +61,21 @@ export const LStatusOrder = [
     class: 'danger'
   }
 ]
+
+export enum EStatusPaymentOrder {
+  PAYED = 1,
+  NO_PAY = 0
+}
+
+export const LStatusPaymentOrder = [
+  {
+    key: EStatusPaymentOrder.PAYED,
+    value: 'Đã thanh toán',
+    class: 'success'
+  },
+  {
+    key: EStatusPaymentOrder.NO_PAY,
+    value: 'Chưa thanh toán',
+    class: 'warning'
+  }
+]

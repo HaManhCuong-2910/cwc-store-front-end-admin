@@ -25,7 +25,7 @@ export const listStatusOption = [
   {
     key: EStatusAccount.LOCK,
     value: 'Khóa',
-    class: 'badge bg-secondary'
+    class: 'badge bg-danger'
   }
 ]
 
@@ -82,7 +82,6 @@ export type TCreateAccountForm = {
   name: string
   email: string
   phoneNumber: string
-  password: string
   status: string
   avatar: string | File
   roles: string[]

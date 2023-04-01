@@ -42,6 +42,14 @@ export const setupInterceptors = (store: Store<any>, router: Router) => {
           duration: 1000
         })
       }
+      if (error.response?.data?.statusCode === 408) {
+        ElMessage({
+          message: 'Tài khoản bị khóa',
+          type: 'error',
+          duration: 1000
+        })
+        serviceUser.LoginAgain(router)
+      }
       if (error.response?.data?.statusCode === 406) {
         const [data, errorApi] = await refreshToken()
         if (data.data && !errorApi) {

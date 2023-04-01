@@ -60,7 +60,7 @@
           <div class="d-flex justify-content-center">
             <router-link
               :to="{
-                name: 'DetailNews',
+                name: 'DetailAccount',
                 params: {
                   id: scope.row._id
                 }
@@ -80,7 +80,7 @@
             </router-link>
             <router-link
               :to="{
-                name: 'UpdateNews',
+                name: 'UpdateAccount',
                 params: {
                   id: scope.row._id
                 }
@@ -88,7 +88,7 @@
             >
               <a-tooltip placement="top">
                 <template #title>
-                  <span>Sửa sản phẩm</span>
+                  <span>Sửa tài khoản</span>
                 </template>
                 <span class="action-col mr-2">
                   <font-awesome-icon
@@ -126,6 +126,12 @@
       @closeDialog="closeDialogRoles"
       @resetTable="handleGetListAccount"
     />
+
+    <DialogDefaultComponent
+      :data="dataDeleteDialog"
+      @closeDialog="closeDialogDelete"
+      @submitDialog="submitDialogDelete"
+    />
   </div>
 </template>
 
@@ -154,7 +160,7 @@ import DialogRolesAccountComponent, {
   type TListRoles
 } from './dialog-roles-account/DialogRolesAccountComponent.vue'
 import { ElMessage } from 'element-plus'
-import { getListAccountApi, getListRolesApi } from '@/api/account'
+import { deleteAccountApi, getListAccountApi, getListRolesApi } from '@/api/account'
 import {
   EStatusAccount,
   type IDataAccount,
@@ -182,8 +188,8 @@ const dataReactive = reactive<TDataReactive>({
 const dataDeleteDialog = reactive({
   width: '28%',
   isOpenDialog: false,
-  title: 'Xác nhận xóa sản phẩm',
-  content: 'Bạn chắc chắn muốn xóa sản phẩm này?',
+  title: 'Xác nhận xóa tài khoản',
+  content: 'Bạn chắc chắn muốn xóa tài khoản này?',
   isLoading: false,
   btnConfirm: 'Xác nhận xóa',
   id: ''
@@ -217,6 +223,33 @@ const closeDialogDelete = () => {
 const openDialogDelete = (id: string) => {
   dataDeleteDialog.isOpenDialog = true
   dataDeleteDialog.id = id
+}
+
+const submitDialogDelete = async () => {
+  dataDeleteDialog.isLoading = true
+  if (dataDeleteDialog.id) {
+    const [res, error] = await deleteAccountApi(dataDeleteDialog.id)
+    dataDeleteDialog.isLoading = false
+    dataDeleteDialog.isOpenDialog = false
+    if (res) {
+      ElMessage({
+        message: 'Xóa tài khoản thành công',
+        type: 'success',
+        duration: 800
+      })
+      await handleGetListAccount({ page: 1, limit: 10 })
+    } else {
+      ElMessage({
+        message: 'Xóa tải khoản không thành công',
+        type: 'error',
+        duration: 800
+      })
+    }
+  } else {
+    dataReactive.tableData.splice(dataReactive.tableData.length - 1, 1)
+    dataDeleteDialog.isLoading = false
+    dataDeleteDialog.isOpenDialog = false
+  }
 }
 
 const filterSearch = ref<any>(null)

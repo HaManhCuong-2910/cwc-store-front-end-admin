@@ -54,7 +54,10 @@ export const formatNumberMoney = (value: number | string) => {
 }
 
 export const removeEmptyValueInObject = (obj: any) => {
-  return Object.entries(obj).reduce((acc, [k, v]) => (v ? { ...acc, [k]: v } : acc), {})
+  return Object.entries(obj).reduce(
+    (acc, [k, v]) => (v !== '' && v !== undefined && v !== null ? { ...acc, [k]: v } : acc),
+    {}
+  )
 }
 
 export const genderSlugFromString = (str: string) => {

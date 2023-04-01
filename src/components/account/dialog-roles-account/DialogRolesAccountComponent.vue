@@ -46,6 +46,7 @@ type TDialogDefault = {
   isOpenDialog: boolean
   listRoles: TListRoles[]
   account: IDataAccount | null
+  EmitAccount?: boolean
 }
 
 const props = defineProps({
@@ -64,9 +65,11 @@ const submitDialog = async () => {
   const listCheckedRoles = dataListRolesCustom.value
     .filter((item) => item.isChecked)
     .map((itemMap) => itemMap.value)
-  if (props.data.account?._id) {
+  if (props.data.EmitAccount) {
+    emit('setRolesChecked', listCheckedRoles)
+  } else {
     const dataUpdate: TUpdateAccount = {
-      _id: props.data.account._id,
+      _id: props.data.account?._id,
       roles: listCheckedRoles
     }
     isLoading.value = true
@@ -87,8 +90,6 @@ const submitDialog = async () => {
       })
     }
     emit('resetTable')
-  } else {
-    emit('setRolesChecked', listCheckedRoles)
   }
 
   emit('closeDialog')

@@ -26,7 +26,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Giá">
+      <el-table-column align="center" width="150" label="Giá">
         <template #default="scope">
           <span>{{ formatNumberMoney(scope.row.price) }} VNĐ</span>
         </template>
@@ -42,6 +42,18 @@
           >
         </template>
       </el-table-column>
+      <el-table-column align="center" label="Thanh toán" width="150">
+        <template #default="scope">
+          <span
+            :class="`font-weight-bold color-custom-${LStatusPaymentOrder.find((item: TDefaultObject) => item.key === Number(scope.row.status_payment))?.class || LStatusPaymentOrder[1].class}`"
+            >{{
+              LStatusPaymentOrder.find(
+                (item: TDefaultObject) => item.key === Number(scope.row.status_payment)
+              )?.value || LStatusPaymentOrder[1].value
+            }}</span
+          >
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="createdAt" label="Ngày đặt hàng" width="250">
         <template #default="scope">
           <span>{{ moment(scope.row.createdAt).format('DD/MM/YYYY hh:mm') }}</span>
@@ -52,7 +64,7 @@
           <span>{{ moment(scope.row.updatedAt).format('DD/MM/YYYY hh:mm') }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Thao tác" width="150" fixed="right">
+      <el-table-column align="center" label="Thao tác" min-width="150" fixed="right">
         <template #default="scope">
           <div class="d-flex justify-content-center">
             <el-tooltip
@@ -82,6 +94,24 @@
               >
                 <font-awesome-icon
                   icon="fa-solid fa-circle-check"
+                  :class="`color-custom-success`"
+                />
+              </span>
+            </el-tooltip>
+
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Đã thanh toán"
+              placement="top"
+              v-if="scope.row.status_payment === EStatusPaymentOrder.NO_PAY"
+            >
+              <span
+                class="action-col cursor-pointer mr-1"
+                @click="handleChangeStatusPaymentOrder(scope.row._id, EStatusPaymentOrder.PAYED)"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'money-check-dollar']"
                   :class="`color-custom-success`"
                 />
               </span>
@@ -149,10 +179,16 @@
 </template>
 
 <script setup lang="ts">
-import { ChangeStatusOrder, getListOrder, removeOrder } from '@/api/order'
+import { ChangeStatusOrder, ChangeStatusPaymentOrder, getListOrder, removeOrder } from '@/api/order'
 import moment from 'moment'
 import { onMounted, reactive, ref, watch } from 'vue'
-import { EStatusOrder, type DataOrderItem, type IDataOrderResponse } from './data'
+import {
+  EStatusOrder,
+  EStatusPaymentOrder,
+  LStatusPaymentOrder,
+  type DataOrderItem,
+  type IDataOrderResponse
+} from './data'
 import HeaderOrderComponent from './header-order/HeaderOrderComponent.vue'
 import { LStatusOrder } from './data'
 import type { TDefaultObject } from '@/constant/constant'
@@ -225,10 +261,22 @@ const handleGetListOrder = async (query: any) => {
 
 const handleSearchListOrder = async (querySearch: any) => {
   dataReactive.querySearch = querySearch
+  const { status } = querySearch
+  let addSearch = {}
   if (route.meta.typeOrder === 'cancel') {
-    await handleGetListOrder({ status: EStatusOrder.CANCEL, ...querySearch })
+    if (status === undefined) {
+      addSearch = { status: EStatusOrder.CANCEL }
+    }
+    await handleGetListOrder({ ...addSearch, ...querySearch })
   } else {
-    await handleGetListOrder({ status: EStatusOrder.CANCEL, not_equal: true, ...querySearch })
+    if (status === undefined) {
+      addSearch = { status: EStatusOrder.CANCEL, not_equal: true }
+    }
+    console.log('querySearch', querySearch)
+    await handleGetListOrder({
+      ...addSearch,
+      ...querySearch
+    })
   }
   headerOrderEl.value.handleSetFalseIsLoading()
 }
@@ -311,6 +359,21 @@ const handleChangeStatusOrder = async (orderID: string, status: EStatusOrder) =>
   if (res) {
     ElMessage({
       message: 'Cập nhật đơn hàng thành công',
+      type: 'success',
+      duration: 800
+    })
+    await handleGetListOrder({ status: EStatusOrder.CANCEL, not_equal: true })
+  }
+}
+
+const handleChangeStatusPaymentOrder = async (orderID: string, status: EStatusPaymentOrder) => {
+  const [res, err] = await ChangeStatusPaymentOrder({
+    id: orderID,
+    status
+  })
+  if (res) {
+    ElMessage({
+      message: 'Cập nhật trạng thái thanh toán thành công',
       type: 'success',
       duration: 800
     })
