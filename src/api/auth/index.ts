@@ -3,7 +3,7 @@ import type { IDataFormLogin } from './data'
 
 export const Login = async (data: IDataFormLogin) => {
   try {
-    const res = await instance.post<any>('/auth/login', data)
+    const res = await instance.post<any>('/auth/admin-login', data)
     return [res, null]
   } catch (err: any) {
     return [null, err]
