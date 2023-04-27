@@ -143,7 +143,7 @@
         </div>
       </div>
 
-      <el-form-item class="w-100 mt-5">
+      <el-form-item class="w-100 mt-5" v-if="props.typeScreen !== ETypeScreen.DETAIL">
         <el-button :loading="isLoading" class="m-auto" type="danger" @click="onSubmit">{{
           props.typeScreen === ETypeScreen.CREATE
             ? 'Tạo mới'
