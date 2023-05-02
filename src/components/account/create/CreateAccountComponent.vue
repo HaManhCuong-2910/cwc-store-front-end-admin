@@ -141,6 +141,17 @@
             </div>
           </el-form-item>
         </div>
+        <div class="col-5" v-if="props.typeScreen === ETypeScreen.CREATE">
+          <el-form-item label="Mật khẩu" prop="password">
+            <el-input
+              type="password"
+              class="custom-input-filter"
+              v-model="formCreateAccount.password"
+              placeholder="Nhập mật khẩu"
+              show-password
+            />
+          </el-form-item>
+        </div>
       </div>
 
       <el-form-item class="w-100 mt-5" v-if="props.typeScreen !== ETypeScreen.DETAIL">
@@ -226,7 +237,8 @@ const formCreateAccount = ref<TCreateAccountForm>({
   type: '',
   province_id: '',
   district_id: '',
-  public_id_avatar: ''
+  public_id_avatar: '',
+  password: ''
 })
 
 watch(
@@ -243,7 +255,8 @@ watch(
       type: props.detailAccount?.type || '',
       province_id: props.detailAccount?.province_id || '',
       district_id: props.detailAccount?.district_id || '',
-      public_id_avatar: props.detailAccount?.public_id_avatar || ''
+      public_id_avatar: props.detailAccount?.public_id_avatar || '',
+      password: props.detailAccount?.password || ''
     }
     if (props.detailAccount?.avatar) {
       previewImage.value = props.detailAccount.avatar
@@ -304,6 +317,13 @@ const rules = reactive<FormRules>({
       required: true,
       message: 'Vui lòng chọn trạng thái',
       trigger: 'change'
+    }
+  ],
+  password: [
+    {
+      required: props.typeScreen === ETypeScreen.CREATE,
+      message: 'Vui lòng nhập mật khẩu',
+      trigger: 'blur'
     }
   ]
 })

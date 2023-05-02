@@ -90,4 +90,5 @@ export type TCreateAccountForm = {
   province_id: number | string
   district_id: number | string
   public_id_avatar: string
+  password: string
 }
