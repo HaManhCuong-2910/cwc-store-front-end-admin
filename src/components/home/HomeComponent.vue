@@ -56,6 +56,17 @@
       </div>
     </div>
   </div>
+  <div class="row container m-auto">
+    <div class="col-8 my-3">
+      <apexchart
+        v-if="Number(xAxisCustom?.length) > 0"
+        width="100%"
+        type="area"
+        :options="chartOptions"
+        :series="series"
+      ></apexchart>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -123,13 +134,55 @@
 
 <script lang="ts" setup>
 import { getStatisticalAll } from '@/api/statistical'
-import type { TgetStatisticalAll } from '@/api/statistical/data'
+import type { TChartRevenue, TgetStatisticalAll } from '@/api/statistical/data'
 import { formatNumberMoney } from '@/constant/constant'
 import { onMounted, reactive, ref, watch } from 'vue'
+import { ElLoading } from 'element-plus'
 const data = ref<TgetStatisticalAll>()
+const chartOptions = ref<any>({
+  chart: {
+    id: 'vuechart-example',
+    zoom: {
+      enabled: false
+    }
+  },
+  xaxis: {},
+  yaxis: {
+    labels: {
+      formatter: function (val) {
+        return `${formatNumberMoney(val)} VNĐ`
+      }
+    }
+  },
+  stroke: {
+    curve: 'straight'
+  },
+  dataLabels: {
+    enabled: false
+  }
+})
+const series = ref<any>([
+  {
+    name: 'Doanh thu',
+    data: []
+  }
+])
+const xAxisCustom = ref<number[] | undefined>([])
+const yAxisCustom = ref<number[] | undefined>([])
 onMounted(async () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   const [res, err] = await getStatisticalAll()
   data.value = res.data
-  console.log('data.value', data.value)
+  xAxisCustom.value = data.value?.chartRevenue.map((item: TChartRevenue) => Number(item.month))
+  yAxisCustom.value = data.value?.chartRevenue.map((item: TChartRevenue) => item.revenue_month)
+  chartOptions.value.xaxis = {
+    categories: xAxisCustom.value
+  }
+  series.value[0].data = yAxisCustom.value
+  loading.close()
 })
 </script>

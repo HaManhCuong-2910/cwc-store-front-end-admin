@@ -4,4 +4,10 @@ export interface TgetStatisticalAll {
   revenue_years: number
   countAccounts: number
   countNews: number
+  chartRevenue: TChartRevenue[]
+}
+
+export type TChartRevenue = {
+  month: number
+  revenue_month: number
 }

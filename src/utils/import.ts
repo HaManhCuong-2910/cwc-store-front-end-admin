@@ -14,6 +14,7 @@ import { setupInterceptors } from '@/api/setupInterceptors'
 import store from '@/store'
 import VueCookies from 'vue3-cookies'
 import { QuillEditor } from '@vueup/vue-quill'
+import VueApexCharts from 'vue3-apexcharts'
 
 library.add(fas, fab, far)
 export function registerGlobalComponent(app: any) {
@@ -23,6 +24,7 @@ export function registerGlobalComponent(app: any) {
     .use(router)
     .use(Antd)
     .use(ElementPlus)
+    .use(VueApexCharts)
     .use(VueCookies, { expires: '30d' })
     .component('QuillEditor', QuillEditor)
     .component('font-awesome-icon', FontAwesomeIcon)

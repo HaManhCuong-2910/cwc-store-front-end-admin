@@ -3,6 +3,7 @@
   "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*"],
   "compilerOptions": {
     "allowJs": true,
+    "ignoreDeprecations": "5.0",
     "checkJs": false,
     "noImplicitAny": false,
     "composite": true,
