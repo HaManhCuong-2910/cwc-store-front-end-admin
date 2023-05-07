@@ -29,3 +29,11 @@ VITE_APP_API_END_POINT="https://cwc-store-backend.up.railway.app"
 <!-- end point local -->
 VITE_APP_API_END_POINT="http://localhost:3022"
 ```
+
+### Tài khoản đăng nhập admin
+
+```sh
+email: hamanhcuong.gaapnow@gmail.com
+password: 1234
+
+```
